@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<div class="ui-g-12">
+				<div class="card">
+					<h1>Productos Solicitados</h1>
+					<h:panelGrid columns="1">
+				<p:fragment>
+					<p:commandButton id="btnRegistroPedido" value="Enviar Pedido"
+						style="width:120%" icon="fa fa-plus"
+						actionListener="#{productoSolicitadoVista.generarPedido()}"
+						update="tblProductos">
+					</p:commandButton>
+				</p:fragment>
+			</h:panelGrid>
+					<h:panelGrid columns="1">
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:dataTable id="tblProductos" var="producto"
+									value="#{productoSolicitadoVista.listaProductosSolicitados}"
+									selection="#{productoSolicitadoVista.listaProductosSeleccionados}"
+									rowKey="#{producto.idproductosolicitado}" reflow="true"
+									rowSelectMode="add">
+								
+									<p:ajax event="rowSelect" update="form"/>
+            						<p:ajax event="rowUnselect" update="form"/>
+            						<p:ajax event="rowSelectCheckbox" update="form"/>
+            						<p:ajax event="rowUnselectCheckbox" update="form"/>
+            						<p:ajax event="toggleSelect" update="form"/>
+										
+									<p:column selectionMode="multiple" exportable="false" style="width:20px"></p:column>
+
+									<p:column headerText="Nombre">
+										<h:outputText value="#{producto.idproducto.nombre}" />
+									</p:column>
+
+									<p:column headerText="Modelo">
+										<h:outputText value="#{producto.idproducto.idmodelo.nombre}" />
+									</p:column>
+
+									<p:column headerText="Talla">
+										<h:outputText value="#{producto.idproducto.idtalla.nombre}" />
+									</p:column>
+
+									<p:column headerText="Color">
+										<h:outputText value="#{producto.idcolor.nombre}" />
+									</p:column>
+
+									<p:column headerText="Cantidad">
+										<h:outputText value="#{producto.cantidad}">
+											<f:convertNumber pattern="#0" />
+										</h:outputText>
+									</p:column>
+
+									<p:column headerText="">
+										<p:fragment>
+											<p:commandButton id="solicitarProducto"
+												icon="fa fa-pencil-square-o"
+												update=":form:manejo-producto-contenido" process="@this"
+												actionListener="#{productoSolicitadoVista.editarProducto(producto)}"
+												oncomplete="PF('solicitudProducto').show()">
+												<p:resetInput target=":form:manejo-producto-contenido" />
+											</p:commandButton>
+										</p:fragment>
+
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</h:panelGrid>
+				</div>
+			</div>
+
+			
+
+			<p:dialog header="Producto Solicitado" widgetVar="solicitudProducto"
+				showEffect="fade" modal="true" width="400" responsive="true">
+				<p:outputPanel id="manejo-producto-contenido" class="ui-fluid">
+					<p:outputPanel
+						rendered="#{not empty productoSolicitadoVista.productoSolicitado}">
+						<h:panelGrid columns="2">
+							<p:outputLabel for="nombre" value="Nombre: " />
+							<p:inputText id="nombre"
+								value="#{productoSolicitadoVista.productoSolicitado.idproducto.nombre}"
+								disabled="true" />
+							<p:outputLabel for="modelo" value="Modelo:" />
+							<p:inputText id="modelo"
+								value="#{productoSolicitadoVista.productoSolicitado.idproducto.idmodelo.nombre}"
+								disabled="true" />
+							<p:outputLabel for="talla" value="Talla:" />
+							<p:inputText id="talla"
+								value="#{productoSolicitadoVista.productoSolicitado.idproducto.idtalla.nombre}"
+								disabled="true" />
+							<p:outputLabel for="cbColor" value="Color:" />
+							<p:selectOneMenu id="cbColor" style="width:300px"
+								value="#{productoSolicitadoVista.nombreColor}" required="true"
+								requiredMessage="Por favor seleccione el Color">
+								<f:selectItem itemLabel="Seleccione un Color" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{productoSolicitadoVista.listaColores}"
+									var="c" itemLabel="#{c.nombre}" itemValue="#{c.nombre}" />
+							</p:selectOneMenu>
+							<p:outputLabel for="cantidad">Cantidad Solicitada</p:outputLabel>
+							<p:spinner id="cantidad" min="0"
+								value="#{productoSolicitadoVista.productoSolicitado.cantidad}" />
+
+						</h:panelGrid>
+					</p:outputPanel>
+				</p:outputPanel>
+				<f:facet name="footer">
+					<h:panelGrid columns="2">
+						<p:commandButton value="Guardar" icon="fa fa-check-square-o"
+							actionListener="#{productoSolicitadoVista.guardarProducto()}"
+							update="manejo-producto-contenido"
+							process="manejo-producto-contenido @this" />
+						<p:fragment>
+							<p:commandButton value="Cancelar" icon="fa fa-times"
+								onclick="PF('solicitudProducto').hide()"
+								class="ui-button-secondary" />
+						</p:fragment>
+					</h:panelGrid>
+				</f:facet>
+			</p:dialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>Ingreso Tejidos Monitex</title>
+    </h:head>
+
+    <h:body>
+        <h:form>
+    	<p:messages id="messages" showDetail="true" closable="true">
+            <p:autoUpdate/>
+        </p:messages>
+        <div class="logo-container">
+            <h:graphicImage name="images/logo.svg" id="PageLogo" library="icarus-layout"/>
+        </div>
+        <div class="ui-g">
+            <p:panel header="Ingreso" styleClass="panel-login">
+                <div class="ui-g-12" style="padding-top:35px;">
+                    <p:inputText value="#{loginVista.usuario.correoelectronico}" required="true" requiredMessage="Debe ingresar el correo electrónico"
+                                 placeholder="Correo Electrónico" style="width:60%;"/><br/>
+                </div>
+                <div class="ui-g-12" style="padding-top:10px;">
+                    <p:password value="#{loginVista.usuario.contrasena}" required="true" requiredMessage="Debe ingresar la contraseña"
+                                placeholder="Contraseña" style="width:60%"/>
+                </div>
+                <div class="ui-g-2"></div>
+                <div class="ui-g-8 login-input-container">
+                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                        <p:commandLink styleClass="link-decoration" value="Recuperar Contraseña?" />
+                    </div>
+                    <div class="ui-g-12 ui-md-6 ui-lg-6">
+                        <p:commandLink styleClass="link-decoration" value="Nuevo Usuario" />
+                    </div>
+                </div>
+                <br></br>
+                <br></br>
+                
+                    <div class="ui-g-8 login-input-container">
+                <center>
+                    <div class="ui-g-2"></div>
+                    <p:commandButton id="ingresoButton" value="Ingresar" action="#{loginVista.iniciarSesion()}"/>
+                </center>
+                        </div>
+                    
+            </p:panel>
+        </div>
+</h:form>
+        <style type="text/css">
+            html {height: 100%;}
+            .ui-button-text, .ui-button-text-only .ui-button-text{padding:8px !important; transition:none !important;}
+            .ui-panel .ui-panel-title {font-size: 17px;}
+        </style>
+
+        <h:outputStylesheet name="css/layout.css" library="icarus-layout" />
+        
+    </h:body>
+
+</html>

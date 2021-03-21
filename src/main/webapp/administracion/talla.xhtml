@@ -1,0 +1,99 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h:form>
+			<div class="ui-g-12">
+				<div class="card">
+					<h1>Tallas Registradas</h1>
+					<h:panelGrid columns="1">
+						<p:fragment>
+							<p:commandButton id="btnRegistroTalla" value="Nueva Talla"
+								icon="fa fa-plus" onclick="PF('registroTalla').show()"
+								style="width:120%"></p:commandButton>
+						</p:fragment>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:dataTable id="tblTalla" var="talla"
+									value="#{tallaVista.listaTallas}">
+									<p:column headerText="Id">
+										<h:outputText value="#{talla.idtalla}" />
+									</p:column>
+
+									<p:column headerText="Nombre">
+										<h:outputText value="#{talla.nombre}" />
+									</p:column>
+
+									<p:column headerText="Descripción">
+										<h:outputText value="#{talla.descripcion}" />
+									</p:column>
+
+									<p:column headerText="Estado">
+										<h:outputText
+											value="#{talla.estado eq 'A'? 'Activo':'Inactivo'}" />
+									</p:column>
+
+									<p:column headerText="">
+
+										<p:fragment>
+											<p:commandButton
+												icon="#{talla.estado eq 'A'? 'fa fa-thumbs-o-down':'fa fa-thumbs-o-up'}"
+												action="#{tallaVista.cambiarEstadoTalla(talla)}"
+												update="tblTalla">
+												<p:confirm header="Confirmar Cambio Talla"
+													message="Se cambiara el estado de la Talla, desea continuar?" />
+											</p:commandButton>
+										</p:fragment>
+
+									</p:column>
+
+								</p:dataTable>
+							</div>
+						</div>
+					</h:panelGrid>
+				</div>
+			</div>
+
+
+			<p:outputPanel id="panelNuevaTalla">
+				<p:fragment>
+					<p:dialog header="Registrar Talla" widgetVar="registroTalla"
+						showEffect="fade" modal="true">
+
+						<h:panelGrid columns="2">
+							<p:outputLabel for="nombreTalla" value="Nombre:" />
+							<p:inputText size="50" id="nombreTalla" required="true"
+								value="#{tallaVista.nombreTalla}" />
+
+							<p:outputLabel for="descripcionTalla" value="Descripción:" />
+							<p:inputText size="50" id="descripcionTalla" required="true"
+								value="#{tallaVista.descripcionTalla}" />
+
+							<p:commandButton value="Registrar"
+								action="#{tallaVista.guardarTalla()}"
+								oncomplete="PF('registroTalla').hide()"
+								update="tblTalla panelNuevaTalla" />
+							<p:commandButton value="Cancelar" type="button"
+								onclick="PF('registroTalla').hide()" />
+						</h:panelGrid>
+
+					</p:dialog>
+				</p:fragment>
+			</p:outputPanel>
+			<p:confirmDialog global="true"
+				style="margin-left: auto; margin-right: auto">
+				<p:commandButton value="Sí" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

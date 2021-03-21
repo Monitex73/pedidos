@@ -1,0 +1,180 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<div class="ui-g-12">
+				<div class="card">
+					<h1>Productos Registrados</h1>
+					<h:panelGrid columns="1">
+						<p:fragment>
+							<p:commandButton id="btnRegistroProducto"
+								value="Registrar Producto" style="width:120%" icon="fa fa-plus"
+								actionListener="#{productoVista.nuevoProducto()}"
+								oncomplete="PF('manejoProducto').show()"
+								update=":form:manejo-producto-contenido">
+								<p:resetInput target=":form:manejo-producto-contenido" />
+							</p:commandButton>
+						</p:fragment>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:dataTable id="tblProductos" var="producto"
+									value="#{productoVista.listaProductosDisponibles}"
+									paginator="true" rows="5" rowSelectMode="add"
+									paginatorPosition="bottom"
+									filteredValue="#{productoVista.listaProductosFiltrados}"
+									widgetVar="productosTabla">
+
+									<f:facet name="header">
+										<div align="right">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('productosTabla').filter()" style="width:20rem"
+												placeholder="Ingrese la busqueda..." />
+										</div>
+									</f:facet>
+
+									<p:column headerText="Producto" filterBy="#{producto.nombre}">
+										<h:outputText value="#{producto.nombre}" />
+									</p:column>
+									<p:column headerText="Modelo">
+										<h:outputText value="#{producto.modelo}" />
+									</p:column>
+									<p:column headerText="Talla">
+										<h:outputText value="#{producto.talla}" />
+									</p:column>
+									<p:column headerText="Cantidad Disponible">
+										<h:outputText value="#{producto.cantidad}">
+											<f:convertNumber pattern="#0" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Precio">
+										<h:outputText value="#{producto.precio}">
+											<f:convertNumber pattern="#0.00" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Estado">
+										<h:outputText
+											value="#{producto.estado eq 'A'?'Activo':'Inactivo'}" />
+									</p:column>
+									<p:column headerText="">
+										<h:panelGrid columns="2" styleClass="noBorders">
+											<p:fragment>
+												<p:commandButton
+													icon="#{producto.estado eq 'A'? 'fa fa-thumbs-o-down':'fa fa-thumbs-o-up'}"
+													action="#{productoVista.cambiarEstadoProducto(producto)}"
+													update="tblProductos">
+													<p:confirm header="Confirmar Cambio Producto"
+														message="Se cambiara el estado del Producto, desea continuar?" />
+												</p:commandButton>
+											</p:fragment>
+											<p:fragment>
+												<p:commandButton id="editarProducto"
+													icon="fa fa-pencil-square-o"
+													update=":form:manejo-producto-contenido" process="@this"
+													actionListener="#{productoVista.editarProducto(producto)}"
+													oncomplete="PF('manejoProducto').show()">
+													<p:resetInput target=":form:manejo-producto-contenido" />
+												</p:commandButton>
+											</p:fragment>
+										</h:panelGrid>
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</h:panelGrid>
+				</div>
+			</div>
+
+
+			<p:dialog header="Detalles Producto" widgetVar="manejoProducto"
+				showEffect="fade" modal="true" width="480" responsive="true">
+				<p:outputPanel id="manejo-producto-contenido" class="ui-fluid">
+					<p:outputPanel
+						rendered="#{not empty productoVista.productoSeleccionado}">
+						<h:panelGrid columns="2">
+							<p:outputLabel for="nombre">Nombre:</p:outputLabel>
+							<p:inputText id="nombre"
+								value="#{productoVista.productoSeleccionado.nombre}"
+								required="true" />
+
+							<p:outputLabel for="descripcion">Descripción:</p:outputLabel>
+							<p:inputText id="descripcion"
+								value="#{productoVista.productoSeleccionado.descripcion}"
+								required="true" />
+
+							<p:outputLabel for="cbModelo" value="Modelo:" />
+							<p:selectOneMenu id="cbModelo" style="width:300px"
+								value="#{productoVista.nombreModelo}" required="true"
+								requiredMessage="Por favor seleccione el Modelo">
+								<f:selectItem itemLabel="Seleccione un Modelo" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{productoVista.listaModelos}" var="m"
+									itemLabel="#{m.nombre}" itemValue="#{m.nombre}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="cbTalla" value="Talla:" />
+							<p:selectOneMenu id="cbTalla" style="width:300px"
+								value="#{productoVista.nombreTalla}" required="true"
+								requiredMessage="Por favor seleccione la Talla">
+								<f:selectItem itemLabel="Seleccione una Talla" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{productoVista.listaTallas}" var="t"
+									itemLabel="#{t.nombre}" itemValue="#{t.nombre}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="precio">Precio</p:outputLabel>
+							<p:inputNumber id="precio" value="#{productoVista.precio}"
+								symbol=" USD" symbolPosition="s" decimalSeparator="."
+								thousandSeparator="," />
+
+							<p:outputLabel for="cantidad">Cantidad</p:outputLabel>
+							<p:spinner id="cantidad" min="0"
+								value="#{productoVista.cantidadDisponible}" />
+								
+							<p:outputLabel for="fotoProducto">Imagen</p:outputLabel>
+								<h:graphicImage id="fotoProducto"
+									value="/resources/fotos/productos/#{productoVista.imagen}"
+									height="100" width="100" />
+
+							
+								<p:fileUpload auto="true" label="Imagen"
+									fileUploadListener="#{productoVista.guardarFileUpload}"
+									update="fotoProducto" accept=".gif,.jpg,.jpeg,.png"/>
+					
+
+						</h:panelGrid>
+					</p:outputPanel>
+				</p:outputPanel>
+				<f:facet name="footer">
+					<h:panelGrid columns="2">
+						<p:commandButton value="Guardar" icon="fa fa-check-square-o"
+							actionListener="#{productoVista.guardarProducto()}"
+							update="tblProductos manejo-producto-contenido"
+							process="manejo-producto-contenido @this" />
+						<p:fragment>
+							<p:commandButton value="Cancelar" icon="fa fa-times"
+								onclick="PF('manejoProducto').hide()"
+								class="ui-button-secondary" />
+						</p:fragment>
+					</h:panelGrid>
+				</f:facet>
+			</p:dialog>
+
+			<p:confirmDialog global="true"
+				style="margin-left: auto; margin-right: auto">
+				<p:commandButton value="Sí" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

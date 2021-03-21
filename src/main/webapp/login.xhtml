@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>Sistema de Pedidos - Tejidos Monitex</title>
+	<h:outputStylesheet library="webjars"
+		name="font-awesome/4.7.0/css/font-awesome.min-jsf.css" />
+</h:head>
+
+<h:body styleClass="containerLogin">
+	<p:growl globalOnly="false" showDetail="true">
+		<p:autoUpdate />
+	</p:growl>
+	<div class="logo-container">
+		<h:graphicImage name="images/logo.svg" library="icarus-layout"
+			id="PageLogo" />
+	</div>
+	<h:form id="loginForm">
+		<div class="ui-g">
+			<p:panel header="Login" styleClass="panel-login">
+				<p:fragment>
+					<div class="ui-g-12" style="padding-top: 35px;">
+						<p:inputText value="#{loginVista.usuario.correoelectronico}"
+							placeholder="Correo Electrónico" required="true"
+							style="width:60%;"
+							requiredMessage="Debe ingresar el Correo Electrónico" />
+						<br />
+					</div>
+					<div class="ui-g-12" style="padding-top: 10px;">
+						<p:password value="#{loginVista.usuario.contrasena}"
+							placeholder="Contraseña" required="true" style="width:60%"
+							requiredMessage="Debe ingresar la Contraseña"></p:password>
+					</div>
+
+					<div style="display: block;">
+						<p:commandButton id="loginButton" value="Ingreso"
+							action="#{loginVista.iniciarSesion()}" style="width:60%" />
+					</div>
+
+				</p:fragment>
+				<div class="ui-g-2"></div>
+
+				<div class="ui-g-8 login-input-container">
+
+					<div class="ui-g-12 ui-md-6 ui-lg-6">
+						<p:fragment>
+							<p:commandLink styleClass="link-decoration"
+								value="Recuperar Contraseña"
+								onclick="PF('recuperarContrasena').show()" />
+						</p:fragment>
+					</div>
+					<div class="ui-g-12 ui-md-6 ui-lg-6">
+						<p:fragment>
+							<p:commandLink styleClass="link-decoration"
+								value="Registrar Usuario" onclick="PF('registroUsuario').show()" />
+						</p:fragment>
+					</div>
+
+				</div>
+
+			</p:panel>
+			<div class="ui-g-12 footer-login">
+				<span>Tejidos Monitex </span><br /> <span>Todos los derechos
+					reservados.</span>
+			</div>
+		</div>
+
+			<p:outputPanel id="nuevoCliente">
+				<p:fragment autoUpdate="true">
+					<p:dialog header="Registro Usuario" widgetVar="registroUsuario"
+						showEffect="fade" modal="true">
+
+						<h:panelGrid columns="2">
+
+							<p:outputLabel for="nombreUsuario" value="Nombre:" />
+							<p:inputText size="50" id="nombreUsuario" label="Nombre"
+								value="#{loginVista.nombre}" required="true"
+								requiredMessage="Debe ingresar el Nombre" />
+
+							<p:outputLabel for="apellidoUsuario" value="Apellido:" />
+							<p:inputText size="50" id="apellidoUsuario" label="Apellido"
+								required="true" value="#{loginVista.apellido}"
+								requiredMessage="Debe ingresar el Apellido" />
+
+							<p:outputLabel for="identificacionUsuario"
+								value="Identificación:" />
+							<p:inputText size="50" id="identificacionUsuario"
+								label="Identificación" required="true"
+								value="#{loginVista.identificacion}"
+								requiredMessage="Debe ingresar la Identificación" />
+
+							<p:outputLabel for="direccionUsuario" value="Dirección:" />
+							<p:inputText size="100" id="direccionUsuario" label="Dirección"
+								required="true" value="#{loginVista.direccion}"
+								requiredMessage="Debe ingresar la Dirección" />
+
+							<p:outputLabel for="telefonoUsuario" value="Teléfono:" />
+							<p:inputText size="20" id="telefonoUsuario" label="Teléfono"
+								required="true" value="#{loginVista.telefono}"
+								requiredMessage="Debe ingresar el Teléfono" />
+
+							<p:outputLabel for="emailUsuario" value="Correo Electrónico:" />
+							<p:inputText size="50" id="emailUsuario"
+								label="Correo Electrónico" required="true"
+								value="#{loginVista.email}"
+								validatorMessage="El Correo Electrónico ingresado no es válido"
+								requiredMessage="Debe ingresar el Correo Electrónico">
+								<f:validateRegex
+									pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+							</p:inputText>
+
+							<p:outputLabel for="contrasenaUsuario01" value="Contraseña:" />
+							<p:password size="20" id="contrasenaUsuario01" label="Contraseña"
+								required="true" value="#{loginVista.clave}"
+								match="contrasenaUsuario02" feedback="true"
+								promptLabel="Ingresa tu contraseña" weakLabel="Débil"
+								goodLabel="Buena" strongLabel="Fuerte"
+								requiredMessage="Debe ingresar la Contraseña"
+								validatorMessage="Las contraseñas ingresadas deben ser iguales" />
+
+							<p:outputLabel for="contrasenaUsuario02"
+								value="Verificar Contraseña:" />
+							<p:password size="20" id="contrasenaUsuario02"
+								label="Repetir Contraseña" required="true"
+								value="#{loginVista.clave}" feedback="true"
+								promptLabel="Ingresa tu contraseña" weakLabel="Débil"
+								goodLabel="Buena" strongLabel="Fuerte"
+								requiredMessage="Debe ingresar la Contraseña" />
+							<p:column />
+
+							<p:captcha id="btnCaptcha" label="Captcha"
+								language="es"
+								requiredMessage="Ingrese el valor que se muestra en la imagen"
+								validatorMessage="El valor de la imagen incorrecto" />
+
+							<p:commandButton id="btnRegistroUsuario" value="Registro"
+								action="#{loginVista.guardarUsuario()}" update="nuevoCliente" />
+
+							<p:fragment>
+								<p:commandButton id="btnCancelarRegistro" value="Cancelar"
+									action="#{loginVista.limpiarCampos()}" update="nuevoCliente"
+									oncomplete="PF('registroUsuario').hide()" />
+							</p:fragment>
+						</h:panelGrid>
+
+					</p:dialog>
+				</p:fragment>
+			</p:outputPanel>
+
+		<p:outputPanel id="recuperarClave">
+			<p:fragment>
+				<p:dialog header="Recuperar Contraseña"
+					widgetVar="recuperarContrasena" showEffect="fade" modal="true">
+					<h:panelGrid columns="2">
+
+						<p:outputLabel for="emailContrasena" value="Correo Electrónico:" />
+						<p:inputText size="50" id="emailContrasena"
+							label="Correo Electrónico" required="true"
+							value="#{loginVista.email}"
+							validatorMessage="El Correo Electrónico ingresado no es válido"
+							requiredMessage="Debe ingresar el Correo Electrónico">
+							<f:validateRegex
+								pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+						</p:inputText>
+
+						<p:commandButton id="btnRecuperar" value="Recuperar"
+							action="#{loginVista.resetearClave()}" update="recuperarClave"
+							oncomplete="PF('recuperarContrasena').hide()" />
+
+						<p:fragment>
+							<p:commandButton id="btnCancelarRecuperar" value="Cancelar"
+								action="#{loginVista.limpiarCampos()}" update="recuperarClave"
+								oncomplete="PF('recuperarContrasena').hide()" />
+						</p:fragment>
+					</h:panelGrid>
+
+				</p:dialog>
+			</p:fragment>
+		</p:outputPanel>
+
+
+	</h:form>
+	<style type="text/css">
+html {
+	height: 100%;
+}
+
+.ui-button-text, .ui-button-text-only .ui-button-text {
+	padding: 8px !important;
+	transition: none !important;
+}
+
+.ui-panel .ui-panel-title {
+	font-size: 17px;
+}
+</style>
+
+	<h:outputStylesheet name="css/layout.css" library="icarus-layout" />
+</h:body>
+
+</html>

@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h:form>
+			<div class="ui-g-12">
+				<div class="card">
+					<h1>Colores Registrados</h1>
+					<h:panelGrid columns="1">
+						<p:fragment>
+							<p:commandButton id="btnRegistroColor" value="Nuevo Color"
+								icon="fa fa-plus" onclick="PF('registroColor').show()"
+								style="width:120%"></p:commandButton>
+						</p:fragment>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:dataTable id="tblColor" var="color"
+									value="#{colorVista.listaColores}">
+									<p:column headerText="Id">
+										<h:outputText value="#{color.idcolor}" />
+									</p:column>
+
+									<p:column headerText="Nombre">
+										<h:outputText value="#{color.nombre}" />
+									</p:column>
+									
+									<p:column headerText="Estado">
+										<h:outputText
+											value="#{color.estado eq 'A'? 'Activo':'Inactivo'}" />
+									</p:column>
+
+									<p:column headerText="">
+
+										<p:fragment>
+											<p:commandButton
+												icon="#{color.estado eq 'A'? 'fa fa-thumbs-o-down':'fa fa-thumbs-o-up'}"
+												action="#{colorVista.cambiarEstadoColor(color)}"
+												update="tblColor">
+												<p:confirm header="Confirmar Cambio Color"
+													message="Se cambiara el estado del Color, desea continuar?" />
+											</p:commandButton>
+										</p:fragment>
+
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</h:panelGrid>
+				</div>
+			</div>
+
+
+			<p:outputPanel id="panelNuevoColor">
+				<p:fragment>
+					<p:dialog header="Registrar Color" widgetVar="registroColor"
+						showEffect="fade" modal="true">
+
+						<h:panelGrid columns="2">
+							<p:outputLabel for="nombreColor" value="Nombre:" />
+							<p:inputText size="50" id="nombreColor" required="true"
+								value="#{colorVista.nombreColor}" />
+
+							<p:commandButton value="Registrar"
+								action="#{colorVista.guardarColor()}"
+								oncomplete="PF('registroColor').hide()" update="tblColor panelNuevoColor" />
+							<p:commandButton value="Cancelar" type="button"
+								onclick="PF('registroColor').hide()" />
+						</h:panelGrid>
+
+					</p:dialog>
+				</p:fragment>
+			</p:outputPanel>
+
+			<p:confirmDialog global="true"
+				style="margin-left: auto; margin-right: auto">
+				<p:commandButton value="Sí" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

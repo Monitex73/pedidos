@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h:form>
+			<div class="ui-g-12">
+				<div class="card">
+					<h1>Roles Registrados</h1>
+					<h:panelGrid columns="1">
+						<p:fragment>
+							<p:commandButton id="btnRegistroRol" value="Nuevo Rol" icon="fa fa-plus"
+								onclick="PF('registroRol').show()" style="width:120%"></p:commandButton>
+						</p:fragment>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:dataTable id="tblRol" var="rol"
+									value="#{rolVista.listaRoles}">
+									<p:column headerText="Id">
+										<h:outputText value="#{rol.idrol}" />
+									</p:column>
+
+									<p:column headerText="Nombre">
+										<h:outputText value="#{rol.nombre}" />
+									</p:column>
+
+									<p:column headerText="Tipo">
+										<h:outputText value="#{rol.tipo eq 'I'? 'Interno':'Externo'}" />
+									</p:column>
+
+									<p:column headerText="Estado">
+										<h:outputText
+											value="#{rol.estado eq 'A'? 'Activo':'Inactivo'}" />
+									</p:column>
+
+									<p:column headerText="">
+
+										<p:fragment>
+											<p:commandButton
+												icon="#{rol.estado eq 'A'? 'fa fa-thumbs-o-down':'fa fa-thumbs-o-up'}"
+												action="#{rolVista.cambiarEstadoRol(rol)}" update="tblRol">
+												<p:confirm header="Confirmar Cambio Rol"
+													message="Se cambiara el estado del Rol, desea continuar?" />
+											</p:commandButton>
+										</p:fragment>
+
+									</p:column>
+
+								</p:dataTable>
+							</div>
+						</div>
+					</h:panelGrid>
+				</div>
+			</div>
+
+			<p:outputPanel id="panelNuevoRol">
+				<p:fragment>
+					<p:dialog header="Registrar Rol" widgetVar="registroRol"
+						showEffect="fade" modal="true">
+
+						<h:panelGrid columns="2">
+							<p:outputLabel for="nombreRol" value="Nombre:" />
+							<p:inputText size="50" id="nombreRol" required="true"
+								value="#{rolVista.rolNuevo.nombre}" />
+
+							<p:outputLabel for="cbTipoRol" value="Tipo:" />
+							<p:selectOneMenu id="cbTipoRol" label="Tipo Rol"
+								value="#{rolVista.rolNuevo.tipo}" required="true"
+								requiredMessage="Por favor seleccione el tipo."
+								style="width:200px">
+								<f:selectItem itemLabel="Seleccione el Tipo" itemValue="#{null}"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Interno" itemValue="I" />
+								<f:selectItem itemLabel="Externo" itemValue="E" />
+								<p:ajax update="tblRol" />
+							</p:selectOneMenu>
+
+							<p:commandButton value="Registrar"
+								action="#{rolVista.guardarRol()}"
+								oncomplete="PF('registroRol').hide()"
+								update="tblRol panelNuevoRol" />
+							<p:commandButton value="Cancelar" type="button"
+								onclick="PF('registroRol').hide()" />
+						</h:panelGrid>
+
+					</p:dialog>
+				</p:fragment>
+			</p:outputPanel>
+
+			<p:confirmDialog global="true"
+				style="margin-left: auto; margin-right: auto">
+				<p:commandButton value="Sí" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

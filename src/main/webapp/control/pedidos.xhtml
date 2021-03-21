@@ -1,0 +1,165 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<div class="ui-g-12">
+				<div class="card">
+					<h1>Lista de Pedidos</h1>
+					<h:panelGrid columns="1">
+					<p:commandButton ajax="false" value="Reporte PDF" icon="fa fa-file-pdf-o">
+						<p:dataExporter type="pdf" target="tblPedidos"
+							fileName="ListaPedidos"
+							preProcessor="#{pedidoVista.procesarPDF}" />
+					</p:commandButton>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:dataTable id="tblPedidos" var="pedido"
+									value="#{pedidoVista.listaPedidos}" paginator="true" rows="5"
+									rowSelectMode="add" paginatorPosition="bottom"
+									filteredValue="#{pedidoVista.listaPedidosFiltrado}"
+									widgetVar="pedidoTabla">
+
+									<f:facet name="header">
+										<div align="right">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('pedidoTabla').filter()" style="width:20rem"
+												placeholder="Ingrese la busqueda..." />
+										</div>
+									</f:facet>
+
+									<p:column headerText="ID">
+										<h:outputText value="#{pedido.idpedido}">
+											<f:convertNumber pattern="#0" />
+										</h:outputText>
+									</p:column>
+
+									<p:column headerText="Cliente"
+										filterBy="#{pedido.idusuario.nombre} #{pedido.idusuario.apellido}">
+										<h:outputText
+											value="#{pedido.idusuario.nombre} #{pedido.idusuario.apellido}" />
+									</p:column>
+
+									<p:column headerText="Fecha" filterBy="#{pedido.fecha}">
+										<h:outputText value="#{pedido.fecha}" />
+									</p:column>
+
+									<p:column headerText="Estado">
+										<h:outputText
+											value="#{pedido.estado eq 'A'? 'En Proceso':'Procesada'}" />
+									</p:column>
+
+
+									<p:column headerText="" exportable="false">
+										<p:fragment>
+											<p:commandButton id="verPedido" icon="fa fa-search"
+												update=":form:manejo-producto-contenido" process="@this"
+												actionListener="#{pedidoVista.verPedidoDetalle(pedido)}"
+												oncomplete="PF('detallePedido').show()">
+												<p:resetInput target=":form:manejo-producto-contenido" />
+											</p:commandButton>
+										</p:fragment>
+
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</h:panelGrid>
+				</div>
+			</div>
+
+			<p:dialog header="Pedido Detalle" widgetVar="detallePedido"
+				showEffect="fade" modal="true" width="680" responsive="true">
+				<p:outputPanel id="manejo-producto-contenido" class="ui-fluid">
+					<p:outputPanel rendered="#{not empty pedidoVista.pedido}">
+						<p:dataTable id="tblPedidoDetalle" var="pedidoDetalle"
+							value="#{pedidoVista.listaPedidoDetalle}"
+							selection="#{pedidoVista.seleccionPedido}"
+							rowKey="#{pedidoDetalle.iddetallepedido}" reflow="true"
+							rowSelectMode="add">
+
+							<p:ajax event="rowSelect"
+								update=":form:manejo-producto-contenido" />
+							<p:ajax event="rowUnselect"
+								update=":form:manejo-producto-contenido" />
+							<p:ajax event="rowSelectCheckbox"
+								update=":form:manejo-producto-contenido" />
+							<p:ajax event="rowUnselectCheckbox"
+								update=":form:manejo-producto-contenido" />
+							<p:ajax event="toggleSelect"
+								update=":form:manejo-producto-contenido" />
+
+							<p:column selectionMode="multiple" exportable="false"
+								style="width:25px;" />
+
+							<p:column headerText="Producto">
+								<h:outputText value="#{pedidoDetalle.idproducto.nombre}" />
+							</p:column>
+
+							<p:column headerText="Modelo">
+								<h:outputText
+									value="#{pedidoDetalle.idproducto.idmodelo.nombre}" />
+							</p:column>
+
+							<p:column headerText="Talla">
+								<h:outputText value="#{pedidoDetalle.idproducto.idtalla.nombre}" />
+							</p:column>
+
+							<p:column headerText="Color">
+								<h:outputText
+									value="#{pedidoVista.nombreColor(pedidoDetalle.idcolor)}" />
+							</p:column>
+
+							<p:column headerText="Cantidad Solicitada">
+								<h:outputText value="#{pedidoDetalle.cantidadsolicitada}">
+									<f:convertNumber pattern="#0" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Cantidad Disponible">
+								<h:outputText
+									value="#{pedidoVista.consultaStock(pedidoDetalle.idproducto.idstock)}">
+									<f:convertNumber pattern="#0" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Estado">
+								<h:outputText
+									value="#{pedidoDetalle.estado eq 'A'? 'En Proceso':'Procesada'}" />
+							</p:column>
+
+						</p:dataTable>
+					</p:outputPanel>
+				</p:outputPanel>
+				<f:facet name="footer">
+					<h:panelGrid columns="3">
+						<p:fragment>
+							<p:commandButton id="btnRegistroDespacho" value="Orden Despacho"
+								icon="fa fa-plus"
+								actionListener="#{pedidoVista.generarDespacho()}" update="@this">
+							</p:commandButton>
+						</p:fragment>
+						<p:fragment>
+							<p:commandButton id="btnRegistroProduccion"
+								value="Orden Produccion" icon="fa fa-plus"
+								actionListener="#{pedidoVista.generarProduccion()}"
+								update="@this">
+							</p:commandButton>
+						</p:fragment>
+						<p:fragment>
+							<p:commandButton value="Cancelar" icon="fa fa-times"
+								onclick="PF('detallePedido').hide()" class="ui-button-secondary" />
+						</p:fragment>
+					</h:panelGrid>
+				</f:facet>
+			</p:dialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

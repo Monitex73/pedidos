@@ -1,0 +1,117 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<div class="ui-g-12">
+				<div class="card">
+					<h1>Lista de Productos</h1>
+					<h:panelGrid columns="1">
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:dataTable id="tblProductos" var="producto"
+									value="#{productoVista.listaProductosActivos}" paginator="true"
+									rows="5" rowSelectMode="add" paginatorPosition="bottom"
+									filteredValue="#{productoVista.listaProductosFiltrados}"
+									widgetVar="productosTabla">
+
+									<f:facet name="header">
+										<div align="right">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('productosTabla').filter()" style="width:20rem"
+												placeholder="Ingrese la busqueda..." />
+										</div>
+									</f:facet>
+									<p:column headerText="Producto" filterBy="#{producto.nombre}">
+										<h:outputText value="#{producto.nombre}" />
+									</p:column>
+
+									<p:column headerText="Imagen">
+										<h:graphicImage id="fotoProducto"
+											value="/resources/fotos/productos/#{producto.imagen}"
+											height="100" width="100" />
+									</p:column>
+
+									<p:column headerText="Modelo">
+										<h:outputText value="#{producto.modelo}" />
+									</p:column>
+
+									<p:column headerText="Talla">
+										<h:outputText value="#{producto.talla}" />
+									</p:column>
+
+									<p:column headerText="">
+										<p:fragment>
+											<p:commandButton id="solicitarProducto"
+												icon="fa fa-cart-plus" process="@this"
+												actionListener="#{productoVista.editarProducto(producto)}"
+												update=":form:manejo-productos-contenido"
+												oncomplete="PF('solicitudProducto').show()">
+												<p:resetInput target=":form:manejo-productos-contenido" />
+											</p:commandButton>
+										</p:fragment>
+
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</h:panelGrid>
+				</div>
+			</div>
+
+			<p:dialog header="Producto Solicitado" widgetVar="solicitudProducto"
+				showEffect="fade" modal="true" width="400" responsive="true">
+				<p:outputPanel id="manejo-productos-contenido" class="ui-fluid">
+					<p:outputPanel
+						rendered="#{not empty productoVista.productoSeleccionado}">
+						<h:panelGrid columns="2">
+							<p:outputLabel for="nombre" value="Nombre: " />
+							<p:inputText id="nombre"
+								value="#{productoVista.productoSeleccionado.nombre}"
+								disabled="true" />
+							<p:outputLabel for="modelo" value="Modelo:" />
+							<p:inputText id="modelo"
+								value="#{productoVista.productoSeleccionado.idmodelo.nombre}"
+								disabled="true" />
+							<p:outputLabel for="talla" value="Talla:" />
+							<p:inputText id="talla"
+								value="#{productoVista.productoSeleccionado.idtalla.nombre}"
+								disabled="true" />
+							<p:outputLabel for="cbColor" value="Color:" />
+							<p:selectOneMenu id="cbColor" style="width:300px"
+								value="#{productoVista.nombreColor}" required="true"
+								requiredMessage="Por favor seleccione el Color">
+								<f:selectItem itemLabel="Seleccione un Color" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{productoVista.listaColores}" var="c"
+									itemLabel="#{c.nombre}" itemValue="#{c.nombre}" />
+							</p:selectOneMenu>
+							<p:outputLabel for="cantidad">Cantidad Solicitada</p:outputLabel>
+							<p:spinner id="cantidad" min="0"
+								value="#{productoVista.cantidadSolicitada}" />
+
+						</h:panelGrid>
+					</p:outputPanel>
+				</p:outputPanel>
+				<f:facet name="footer">
+					<h:panelGrid columns="2">
+						<p:commandButton value="Agregar" icon="fa fa-check-square-o"
+							actionListener="#{productoVista.guardarProductoSolicitado()}"
+							update="manejo-productos-contenido"
+							process="manejo-productos-contenido @this" />
+						<p:fragment>
+							<p:commandButton value="Cancelar" icon="fa fa-times"
+								onclick="PF('solicitudProducto').hide()"
+								class="ui-button-secondary" />
+						</p:fragment>
+					</h:panelGrid>
+				</f:facet>
+			</p:dialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

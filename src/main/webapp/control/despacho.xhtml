@@ -1,0 +1,140 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<div class="ui-g-12">
+				<div class="card">
+					<h1>Ordenes de Despacho</h1>
+					<h:panelGrid columns="1">
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:dataTable id="tblDespacho" var="despacho"
+									value="#{ordenDespachoVista.listaOrdenDespacho}"
+									paginator="true" rows="5" rowSelectMode="add"
+									paginatorPosition="bottom"
+									filteredValue="#{ordenDespachoVista.listaOrdenDespachoFiltrado}"
+									widgetVar="despachoTabla">
+
+									<f:facet name="header">
+										<div align="right">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('despachoTabla').filter()" style="width:20rem"
+												placeholder="Ingrese la busqueda..." />
+										</div>
+									</f:facet>
+
+									<p:column headerText="ID">
+										<h:outputText value="#{despacho.idordendespacho}">
+											<f:convertNumber pattern="#0" />
+										</h:outputText>
+									</p:column>
+
+									<p:column headerText="Cliente" filterBy="#{despacho.idpedido.idusuario.nombre} #{despacho.idpedido.idusuario.apellido}">
+										<h:outputText
+											value="#{despacho.idpedido.idusuario.nombre} #{despacho.idpedido.idusuario.apellido}" />
+									</p:column>
+
+									<p:column headerText="Fecha" filterBy="#{despacho.fecha}">
+										<h:outputText value="#{despacho.fecha}" />
+									</p:column>
+
+									<p:column headerText="Estado" filterBy="#{despacho.estado eq 'A'? 'En Proceso':'Procesada'}">
+										<h:outputText
+											value="#{despacho.estado eq 'A'? 'En Proceso':'Procesada'}" />
+									</p:column>
+
+
+									<p:column headerText="">
+										<p:fragment>
+											<p:commandButton id="verDespacho" icon="fa fa-search"
+												update=":form:manejo-producto-contenido" process="@this"
+												actionListener="#{ordenDespachoVista.verDespachoDetalle(despacho)}"
+												oncomplete="PF('detalleDespacho').show()">
+												<p:resetInput target=":form:manejo-producto-contenido" />
+											</p:commandButton>
+										</p:fragment>
+
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</h:panelGrid>
+				</div>
+			</div>
+
+			<p:dialog header="Despacho Detalle" widgetVar="detalleDespacho"
+				showEffect="fade" modal="true" width="650" responsive="true">
+				<p:outputPanel id="manejo-producto-contenido" class="ui-fluid">
+					<p:outputPanel
+						rendered="#{not empty ordenDespachoVista.ordenDespacho}">
+						<p:dataTable id="tblPedidoDespacho" var="pedidoDespacho"
+							value="#{ordenDespachoVista.listaDespachoDetalle}">
+
+							<p:column headerText="Producto">
+								<h:outputText
+									value="#{pedidoDespacho.iddetallepedido.idproducto.nombre}" />
+							</p:column>
+
+							<p:column headerText="Modelo">
+								<h:outputText
+									value="#{pedidoDespacho.iddetallepedido.idproducto.idmodelo.nombre}" />
+							</p:column>
+
+							<p:column headerText="Talla">
+								<h:outputText
+									value="#{pedidoDespacho.iddetallepedido.idproducto.idtalla.nombre}" />
+							</p:column>
+
+							<p:column headerText="Color">
+								<h:outputText
+									value="#{ordenDespachoVista.nombreColor(pedidoDespacho.iddetallepedido.idcolor)}" />
+							</p:column>
+
+							<p:column headerText="Cantidad">
+								<h:outputText value="#{pedidoDespacho.cantidad}">
+									<f:convertNumber pattern="#0" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Estado">
+								<h:outputText
+									value="#{pedidoDespacho.estado eq 'A'? 'En Proceso':'Procesada'}" />
+							</p:column>
+
+						</p:dataTable>
+
+
+					</p:outputPanel>
+				</p:outputPanel>
+
+				<h:panelGrid columns="3">
+
+					<p:fragment>
+						<p:commandButton value="Cerrar" icon="fa fa-times"
+							onclick="PF('detalleDespacho').hide()"
+							class="ui-button-secondary" />
+					</p:fragment>
+
+					<p:commandButton value="Terminado" icon="fa fa-check"
+						action="#{ordenDespachoVista.cambiarEstadoDespacho()}"
+						update="tblPedidoDespacho tblDespacho"
+						rendered="#{loginVista.rolLogin eq 'VENTAS'?true:false}"
+						 />
+
+					<p:commandButton ajax="false" value="PDF" icon="fa fa-file-pdf-o">
+						<p:dataExporter type="pdf" target="tblPedidoDespacho"
+							fileName="OrdenDespacho-#{ordenDespachoVista.ordenDespacho.idordendespacho}"
+							preProcessor="#{ordenDespachoVista.procesarPDF}" />
+					</p:commandButton>
+				</h:panelGrid>
+
+			</p:dialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

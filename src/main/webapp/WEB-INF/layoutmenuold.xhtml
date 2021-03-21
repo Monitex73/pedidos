@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pi="http://primefaces.org/icarus">
+
+
+	<h:form id="menuform">
+
+		<pi:menu widgetVar="IcarusMenu">
+			<p:menuitem id="im_dashboard" value="Dashboard" icon="fa fa-home"
+				outcome="/dashboard" />
+
+			<p:submenu id="im_administracion" label="Administración" icon="fa fa-gg">
+				<p:submenu id="im_admusr" label="Manejo de Usuarios" icon="fa fa-users">
+					<p:menuitem id="im_roles" value="Roles" icon="fa fa-tag"
+						outcome="/administracion/rol" />
+					<p:menuitem id="im_usuarios" value="Usuarios" icon="fa fa-address-book"
+						outcome="/administracion/usuario" />
+				</p:submenu>
+				<p:submenu id="im_admprd" label="Manejo de Productos" icon="fa fa-sign-in">
+					<p:menuitem id="im_modelos" value="Modelos" icon="fa fa-sign-in"
+						url="#" />
+					<p:menuitem id="im_colores" value="Colores" icon="fa fa-sign-in"
+						outcome="/administracion/color" />
+					<p:menuitem id="im_tallas" value="Tallas" icon="fa fa-sign-in"
+						url="#" />
+					<p:menuitem id="im_productos" value="Productos" icon="fa fa-sign-in"
+						url="#" />
+				</p:submenu>
+			</p:submenu>
+			
+			<p:submenu id="im_cliente" label="Pedidos" icon="fa fa-gg">
+				<p:menuitem id="im_listaproductos" value="Productos" icon="fa fa-sign-in"
+						url="#" />
+				<p:menuitem id="im_pedidosRealizados" value="Control Pedidos" icon="fa fa-sign-in"
+						url="#" />
+			</p:submenu>
+			
+			<p:submenu id="im_controlPedidos" label="Pedidos" icon="fa fa-gg">
+				<p:menuitem id="im_listapedidos" value="Control Pedidos" icon="fa fa-sign-in"
+						url="#" />
+				<p:menuitem id="im_listaOrdenProduccion" value="Control Ordenes Producción" icon="fa fa-sign-in"
+						url="#" />
+				<p:menuitem id="im_listaOrdenDespacho" value="Control Ordenes Despacho" icon="fa fa-sign-in"
+						url="#" />
+			</p:submenu>		
+
+			<p:menuitem id="im_doc" value="Documentación" icon="fa fa-book"
+				outcome="/docs" />
+		</pi:menu>
+
+	</h:form>
+
+</ui:composition>

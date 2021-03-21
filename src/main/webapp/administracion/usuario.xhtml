@@ -1,0 +1,211 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="content">
+		<h:form id="form">
+			<div class="ui-g-12">
+				<div class="card">
+					<h1>Usuarios Registrados</h1>
+					<h:panelGrid columns="1">
+						<p:fragment>
+							<p:commandButton id="btnRegistroUsuario" value="Registrar Usuario"
+								icon="fa fa-plus" onclick="PF('registroUsuario').show()"
+								style="width:120%"></p:commandButton>
+						</p:fragment>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
+						<div class="ui-g">
+							<div class="ui-g-12">
+								<p:dataTable id="tblUsuarios" var="usuario"
+									value="#{usuarioVista.listaUsuarios}" paginator="true" rows="5"
+									rowSelectMode="add" paginatorPosition="bottom"
+									filteredValue="#{usuarioVista.listaUsuariosFiltrados}"
+									widgetVar="usuariosTabla">
+
+									<f:facet name="header">
+										<div align="right">
+											<p:inputText id="globalFilter"
+												onkeyup="PF('usuariosTabla').filter()" style="width:20rem"
+												placeholder="Ingrese la busqueda..." />
+										</div>
+									</f:facet>
+
+									<p:column headerText="Nombre"
+										filterBy="#{usuario.nombre} #{usuario.apellido}">
+										<h:outputText value="#{usuario.nombre} #{usuario.apellido}" />
+									</p:column>
+									<p:column headerText="Correo"
+										filterBy="#{usuario.correoelectronico}">
+										<h:outputText style="vertical-align: middle"
+											value="#{usuario.correoelectronico}" />
+									</p:column>
+									<p:column headerText="Dirección">
+										<h:outputText value="#{usuario.direccion}" />
+									</p:column>
+									<p:column headerText="Teléfono">
+										<h:outputText value="#{usuario.telefono}" />
+									</p:column>
+									<p:column headerText="Rol" sortBy="#{usuario.idrol.nombre}">
+										<h:outputText value="#{usuario.idrol.nombre}" />
+									</p:column>
+									<p:column headerText="Estado">
+										<h:outputText
+											value="#{usuario.estado eq 'A'? 'Activo':'Inactivo'}" />
+									</p:column>
+									<p:column headerText="">
+										<h:panelGrid columns="2" styleClass="noBorders">
+											<p:fragment>
+												<p:commandButton
+													icon="#{usuario.estado eq 'A'? 'fa fa-thumbs-o-down':'fa fa-thumbs-o-up'}"
+													action="#{usuarioVista.cambiarEstadoUsuario(usuario)}"
+													update="tblUsuarios">
+													<p:confirm header="Confirmar Cambio Usuario"
+														message="Se cambiara el estado del Usuario, desea continuar?" />
+												</p:commandButton>
+											</p:fragment>
+											<p:fragment>
+												<p:commandButton id="editarUsuario"
+													icon="fa fa-pencil-square-o"
+													action="#{usuarioVista.verActualizarUsuario(usuario)}"
+													update=":form" />
+											</p:fragment>
+										</h:panelGrid>
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</h:panelGrid>
+				</div>
+			</div>
+
+			<p:outputPanel id="panelNuevoUsuario">
+				<p:fragment>
+					<p:dialog header="Registrar Usuario" widgetVar="registroUsuario"
+						showEffect="fade" modal="true">
+
+						<h:panelGrid columns="2">
+							<p:outputLabel for="nombreUsuario" value="Nombre:" />
+							<p:inputText size="50" id="nombreUsuario" label="Nombre"
+								value="#{usuarioVista.usr.nombre}" required="true"
+								requiredMessage="Debe ingresar el Nombre" />
+
+							<p:outputLabel for="apellidoUsuario" value="Apellido:" />
+							<p:inputText size="50" id="apellidoUsuario" label="Apellido"
+								required="true" value="#{usuarioVista.usr.apellido}"
+								requiredMessage="Debe ingresar el Apellido" />
+
+							<p:outputLabel for="identificacionUsuario"
+								value="Identificación:" />
+							<p:inputText size="50" id="identificacionUsuario"
+								label="Identificación" required="true"
+								value="#{usuarioVista.usr.identificacion}"
+								requiredMessage="Debe ingresar la Identificación" />
+
+							<p:outputLabel for="direccionUsuario" value="Dirección:" />
+							<p:inputText size="100" id="direccionUsuario" label="Dirección"
+								required="true" value="#{usuarioVista.usr.direccion}"
+								requiredMessage="Debe ingresar la Dirección" />
+
+							<p:outputLabel for="telefonoUsuario" value="Teléfono:" />
+							<p:inputText size="20" id="telefonoUsuario" label="Teléfono"
+								required="true" value="#{usuarioVista.usr.telefono}"
+								requiredMessage="Debe ingresar el Teléfono" />
+
+							<p:outputLabel for="emailUsuario" value="Correo Electrónico:" />
+							<p:inputText size="50" id="emailUsuario"
+								label="Correo Electrónico" required="true"
+								value="#{usuarioVista.usr.correoelectronico}"
+								validatorMessage="El Correo Electrónico ingresado no es válido"
+								requiredMessage="Debe ingresar el Correo Electrónico">
+								<f:validateRegex
+									pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+							</p:inputText>
+
+							<p:outputLabel for="contrasenaUsuario" value="Contraseña:" />
+							<p:password size="20" id="contrasenaUsuario" label="Contraseña"
+								required="true" value="#{usuarioVista.usr.contrasena}"
+								feedback="true" weakLabel="Débil" goodLabel="Buena"
+								strongLabel="Fuerte"
+								requiredMessage="Debe ingresar la Contraseña" />
+
+							<p:outputLabel for="cbRol" value="Rol:" />
+							<p:selectOneMenu id="cbRol" style="width:300px"
+								value="#{usuarioVista.nombreRol}" required="true"
+								requiredMessage="Por favor seleccione el Rol">
+								<f:selectItem itemLabel="Seleccione un Rol" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{usuarioVista.listaRoles}" var="r"
+									itemLabel="#{r.nombre}" itemValue="#{r.nombre}" />
+							</p:selectOneMenu>
+
+							<p:commandButton value="Aceptar"
+								action="#{usuarioVista.guardarUsuario()}"
+								oncomplete="PF('registroUsuario').hide()"
+								update="tblUsuarios panelNuevoUsuario" />
+							<p:commandButton value="Cancelar" type="button"
+								onclick="PF('registroUsuario').hide()" />
+						</h:panelGrid>
+
+					</p:dialog>
+				</p:fragment>
+			</p:outputPanel>
+			<p:outputPanel id="panelActualizarUsuario">
+				<p:fragment>
+					<p:dialog header="Actualizar Usuario" widgetVar="actualizarUsuario"
+						modal="true" visible="#{usuarioVista.verActualizarUsuario}">
+						<h:panelGrid columns="2">
+							<p:outputLabel for="nombreUsuarioA" value="Nombre:" />
+							<p:inputText size="50" id="nombreUsuarioA" label="Nombre"
+								value="#{usuarioVista.usr.nombre}" disabled="true" />
+
+							<p:outputLabel for="apellidoUsuarioA" value="Apellido:" />
+							<p:inputText size="50" id="apellidoUsuarioA" label="Apellido"
+								disabled="true" value="#{usuarioVista.usr.apellido}" />
+
+							<p:outputLabel for="identificacionUsuarioA"
+								value="Identificación:" />
+							<p:inputText size="50" id="identificacionUsuarioA"
+								label="Identificación" disabled="true"
+								value="#{usuarioVista.usr.identificacion}" />
+
+							<p:outputLabel for="emailUsuarioA" value="Correo Electrónico:" />
+							<p:inputText size="50" id="emailUsuarioA"
+								label="Correo Electrónico" disabled="true"
+								value="#{usuarioVista.usr.correoelectronico}" />
+
+							<p:outputLabel for="direccionUsuarioA" value="Dirección:" />
+							<p:inputText size="100" id="direccionUsuarioA" label="Dirección"
+								required="true" value="#{usuarioVista.usr.direccion}"
+								requiredMessage="Debe ingresar la Dirección" />
+
+							<p:outputLabel for="telefonoUsuarioA" value="Teléfono:" />
+							<p:inputText size="20" id="telefonoUsuarioA" label="Teléfono"
+								required="true" value="#{usuarioVista.usr.telefono}"
+								requiredMessage="Debe ingresar el Teléfono" />
+
+							<p:commandButton value="Actualizar"
+								action="#{usuarioVista.actualizarUsuario()}"
+								oncomplete="PF('actualizarUsuario').hide()" update="tblUsuarios" />
+							<p:commandButton value="Cancelar" type="button"
+								onclick="PF('actualizarUsuario').hide()" />
+						</h:panelGrid>
+					</p:dialog>
+				</p:fragment>
+			</p:outputPanel>
+
+			<p:confirmDialog global="true"
+				style="margin-left: auto; margin-right: auto">
+				<p:commandButton value="Sí" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
