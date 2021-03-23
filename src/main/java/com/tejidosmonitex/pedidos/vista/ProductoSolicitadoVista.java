@@ -18,9 +18,11 @@ import com.tejidosmonitex.pedidos.controlador.IColorControlador;
 import com.tejidosmonitex.pedidos.controlador.IPedidoControlador;
 import com.tejidosmonitex.pedidos.controlador.IPedidoDetalleControlador;
 import com.tejidosmonitex.pedidos.controlador.IProductoSolicitadoControlador;
+import com.tejidosmonitex.pedidos.modelo.dto.ProductoDto;
 import com.tejidosmonitex.pedidos.modelo.entidades.Color;
 import com.tejidosmonitex.pedidos.modelo.entidades.Pedido;
 import com.tejidosmonitex.pedidos.modelo.entidades.Pedidodetalle;
+import com.tejidosmonitex.pedidos.modelo.entidades.Producto;
 import com.tejidosmonitex.pedidos.modelo.entidades.Productosolicitado;
 import com.tejidosmonitex.pedidos.modelo.entidades.Usuario;
 
@@ -219,6 +221,22 @@ public class ProductoSolicitadoVista implements Serializable {
 		
 		listaProductosSolicitados = productoSolicitadoControlador.obtenerProductosSolicitadosPorUsuario(us.getIdusuario());
 		
+	}
+	
+	public void cambiarEstadoProducto(Productosolicitado prd) {	
+		FacesContext context = FacesContext.getCurrentInstance();
+		//Productosolicitado prd = productoSolicitadoControlador.productoPorID(p.getIdProducto());
+		if (prd.getEstado() == 'A') {
+			prd.setEstado('X');
+		} else {
+			prd.setEstado('A');
+		}
+
+		productoSolicitadoControlador.actualizarProductoSolicitado(prd);
+		
+		listaProductosSolicitados = productoSolicitadoControlador.obtenerProductosSolicitadosPorUsuario(us.getIdusuario());
+
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso", "Producto Eliminado"));
 	}
 	
 	

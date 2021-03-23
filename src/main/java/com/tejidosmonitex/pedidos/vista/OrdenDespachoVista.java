@@ -1,6 +1,7 @@
 package com.tejidosmonitex.pedidos.vista;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -129,6 +130,18 @@ public class OrdenDespachoVista implements Serializable {
 	      datosOrdenDespacho.add(new Paragraph("Fecha: " + ordenDespacho.getFecha().toString()));
 	      //datosOrdenDespacho.setFont(FontFactory.getFont(FontFactory.COURIER, 14,Font.BOLD));
 	      HeaderFooter header = new HeaderFooter(datosOrdenDespacho, true);
+	      pdf.setHeader(header);
+	      pdf.setPageSize(PageSize.A4.rotate());
+	      pdf.open();
+	    }
+	
+	public void procesarPDFReporte(Object document) {
+	      Document pdf = (Document) document;
+	      Phrase datosDespacho = new Paragraph("Lista Ordenes de Despacho");
+	      datosDespacho.add(new Paragraph("\n"));
+	      datosDespacho.add(new Paragraph("Fecha: " + new Date().toString()));
+	      //datosOrdenDespacho.setFont(FontFactory.getFont(FontFactory.COURIER, 14,Font.BOLD));
+	      HeaderFooter header = new HeaderFooter(datosDespacho, true);
 	      pdf.setHeader(header);
 	      pdf.setPageSize(PageSize.A4.rotate());
 	      pdf.open();

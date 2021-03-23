@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import com.tejidosmonitex.pedidos.modelo.dao.IProductoSolicitadoDao;
+import com.tejidosmonitex.pedidos.modelo.entidades.Producto;
 import com.tejidosmonitex.pedidos.modelo.entidades.Productosolicitado;
 
 @Stateless
@@ -30,8 +31,8 @@ public class ProductoSolicitadoDaoImpl implements IProductoSolicitadoDao {
 
 	@Override
 	public List<Productosolicitado> obtenerProductosSolicitadosPorUsuario(Integer idUsuario) {
-		Query q = em
-				.createQuery("select p from Productosolicitado p where p.idusuario.idusuario = :usuario and p.estado = :estado");
+		Query q = em.createQuery(
+				"select p from Productosolicitado p where p.idusuario.idusuario = :usuario and p.estado = :estado");
 		q.setParameter("usuario", idUsuario);
 		q.setParameter("estado", 'A');
 		return q.getResultList();
@@ -40,6 +41,19 @@ public class ProductoSolicitadoDaoImpl implements IProductoSolicitadoDao {
 	@Override
 	public void actualizarProductoSolicitado(Productosolicitado ps) {
 		em.merge(ps);
+	}
+
+	@Override
+	public Productosolicitado productoPorID(Integer idProducto) {
+		Query q = em.createQuery("select p from Productosolicitado p where p.idproducto = :id");
+		q.setParameter("id", idProducto);
+
+		if ((q.getResultList() != null) && (q.getResultList().size() == 1)) {
+			return (Productosolicitado) q.getResultList().get(0);
+		} else {
+			return new Productosolicitado();
+		}
+
 	}
 
 }

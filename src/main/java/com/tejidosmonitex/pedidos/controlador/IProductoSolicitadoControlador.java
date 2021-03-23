@@ -18,5 +18,6 @@ public interface IProductoSolicitadoControlador {
 	public void guardarProductoSolicitado(Productosolicitado ps);
 	public List<Productosolicitado> obtenerProductosSolicitadosPorUsuario(Integer idUsuario);
 	public void actualizarProductoSolicitado(Productosolicitado ps);
+	public Productosolicitado productoPorID(Integer idProducto);
 	
 }

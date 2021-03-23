@@ -10,14 +10,14 @@
 				<div class="card">
 					<h1>Productos Solicitados</h1>
 					<h:panelGrid columns="1">
-				<p:fragment>
-					<p:commandButton id="btnRegistroPedido" value="Enviar Pedido"
-						style="width:120%" icon="fa fa-plus"
-						actionListener="#{productoSolicitadoVista.generarPedido()}"
-						update="tblProductos">
-					</p:commandButton>
-				</p:fragment>
-			</h:panelGrid>
+						<p:fragment>
+							<p:commandButton id="btnRegistroPedido" value="Enviar Pedido"
+								style="width:120%" icon="fa fa-plus"
+								actionListener="#{productoSolicitadoVista.generarPedido()}"
+								update="tblProductos">
+							</p:commandButton>
+						</p:fragment>
+					</h:panelGrid>
 					<h:panelGrid columns="1">
 						<div class="ui-g">
 							<div class="ui-g-12">
@@ -26,14 +26,15 @@
 									selection="#{productoSolicitadoVista.listaProductosSeleccionados}"
 									rowKey="#{producto.idproductosolicitado}" reflow="true"
 									rowSelectMode="add">
-								
-									<p:ajax event="rowSelect" update="form"/>
-            						<p:ajax event="rowUnselect" update="form"/>
-            						<p:ajax event="rowSelectCheckbox" update="form"/>
-            						<p:ajax event="rowUnselectCheckbox" update="form"/>
-            						<p:ajax event="toggleSelect" update="form"/>
-										
-									<p:column selectionMode="multiple" exportable="false" style="width:20px"></p:column>
+
+									<p:ajax event="rowSelect" update="form" />
+									<p:ajax event="rowUnselect" update="form" />
+									<p:ajax event="rowSelectCheckbox" update="form" />
+									<p:ajax event="rowUnselectCheckbox" update="form" />
+									<p:ajax event="toggleSelect" update="form" />
+
+									<p:column selectionMode="multiple" exportable="false"
+										style="width:20px"></p:column>
 
 									<p:column headerText="Nombre">
 										<h:outputText value="#{producto.idproducto.nombre}" />
@@ -58,16 +59,26 @@
 									</p:column>
 
 									<p:column headerText="">
-										<p:fragment>
-											<p:commandButton id="solicitarProducto"
-												icon="fa fa-pencil-square-o"
-												update=":form:manejo-producto-contenido" process="@this"
-												actionListener="#{productoSolicitadoVista.editarProducto(producto)}"
-												oncomplete="PF('solicitudProducto').show()">
-												<p:resetInput target=":form:manejo-producto-contenido" />
-											</p:commandButton>
-										</p:fragment>
-
+										<h:panelGrid columns="2" styleClass="noBorders">
+											<p:fragment>
+												<p:commandButton id="solicitarProducto"
+													icon="fa fa-pencil-square-o"
+													update=":form:manejo-producto-contenido" process="@this"
+													actionListener="#{productoSolicitadoVista.editarProducto(producto)}"
+													oncomplete="PF('solicitudProducto').show()">
+													<p:resetInput target=":form:manejo-producto-contenido" />
+												</p:commandButton>
+											</p:fragment>
+											<p:fragment>
+												<p:commandButton
+													icon="fa fa-trash"
+													action="#{productoSolicitadoVista.cambiarEstadoProducto(producto)}"
+													update="tblProductos">
+													<p:confirm header="Confirmar Eliminación Producto"
+														message="Se eliminará el Producto, desea continuar?" />
+												</p:commandButton>
+											</p:fragment>
+										</h:panelGrid>
 									</p:column>
 								</p:dataTable>
 							</div>
@@ -76,7 +87,7 @@
 				</div>
 			</div>
 
-			
+
 
 			<p:dialog header="Producto Solicitado" widgetVar="solicitudProducto"
 				showEffect="fade" modal="true" width="400" responsive="true">
@@ -126,6 +137,15 @@
 					</h:panelGrid>
 				</f:facet>
 			</p:dialog>
+			
+			<p:confirmDialog global="true"
+				style="margin-left: auto; margin-right: auto">
+				<p:commandButton value="Sí" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
 		</h:form>
 
 	</ui:define>

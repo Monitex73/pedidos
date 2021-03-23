@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import com.tejidosmonitex.pedidos.modelo.entidades.Producto;
 import com.tejidosmonitex.pedidos.modelo.entidades.Productosolicitado;
 
 /**
@@ -17,5 +18,6 @@ public interface IProductoSolicitadoDao {
 	public void guardarProductoSolicitado(Productosolicitado ps);
 	public List<Productosolicitado> obtenerProductosSolicitadosPorUsuario(Integer idUsuario);
 	public void actualizarProductoSolicitado(Productosolicitado ps);
+	public Productosolicitado productoPorID(Integer idProducto);
 	
 }

@@ -10,6 +10,13 @@
 				<div class="card">
 					<h1>Ordenes de Despacho</h1>
 					<h:panelGrid columns="1">
+					<p:commandButton ajax="false" value="Reporte PDF" icon="fa fa-file-pdf-o">
+						<p:dataExporter type="pdf" target="tblDespacho"
+							fileName="ListaDespachos"
+							preProcessor="#{ordenDespachoVista.procesarPDFReporte}" />
+					</p:commandButton>
+					</h:panelGrid>
+					<h:panelGrid columns="1">
 						<div class="ui-g">
 							<div class="ui-g-12">
 								<p:dataTable id="tblDespacho" var="despacho"
@@ -48,7 +55,7 @@
 									</p:column>
 
 
-									<p:column headerText="">
+									<p:column headerText="" exportable="false">
 										<p:fragment>
 											<p:commandButton id="verDespacho" icon="fa fa-search"
 												update=":form:manejo-producto-contenido" process="@this"

@@ -42,4 +42,9 @@ public class ProductoSolicitadoControladorImpl implements IProductoSolicitadoCon
 		productoSolicitadoDao.actualizarProductoSolicitado(ps);
 	}
 
+	@Override
+	public Productosolicitado productoPorID(Integer idProducto) {
+		return productoSolicitadoDao.productoPorID(idProducto);
+	}
+
 }
